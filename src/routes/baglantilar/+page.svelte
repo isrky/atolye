@@ -37,7 +37,10 @@
 </svelte:head>
 
 <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-	<header class="grid gap-8 lg:grid-cols-12 lg:items-end {PLAN}" data-plan-etiket="PanelBasligi">
+	<header
+		class="grid gap-x-sutun gap-y-8 lg:grid-cols-12 lg:items-end {PLAN}"
+		data-plan-etiket="PanelBasligi"
+	>
 		<div class="lg:col-span-7">
 			<div class="flex items-center gap-5">
 				<div class="avatar avatar-placeholder shrink-0">

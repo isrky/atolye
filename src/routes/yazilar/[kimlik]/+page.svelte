@@ -103,7 +103,7 @@
 
 	<article aria-labelledby="yazi-baslik">
 		<header
-			class="mt-6 grid gap-8 lg:grid-cols-12 lg:items-end {PLAN}"
+			class="mt-6 grid gap-x-sutun gap-y-8 lg:grid-cols-12 lg:items-end {PLAN}"
 			data-plan-etiket="Baslik · 7/5"
 		>
 			<div class="lg:col-span-7">
@@ -251,7 +251,7 @@
 		</div>
 	</article>
 
-	<div class="mt-12 grid gap-8 lg:grid-cols-12 lg:items-start">
+	<div class="mt-12 grid gap-x-sutun gap-y-8 lg:grid-cols-12 lg:items-start">
 		<div class="grid gap-8 lg:col-span-5">
 			{#if data.seri}
 				<SeriGezgini

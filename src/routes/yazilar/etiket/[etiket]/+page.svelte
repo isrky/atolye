@@ -25,7 +25,7 @@
 		yol={[{ etiket: 'Etiketler', href: '/yazilar#etiketler' }, { etiket: `#${data.etiket.ad}` }]}
 	/>
 
-	<div class="grid gap-10 lg:grid-cols-12">
+	<div class="grid gap-x-sutun gap-y-10 lg:grid-cols-12">
 		<header class="flex flex-col gap-6 lg:col-span-5 {PLAN}" data-plan-etiket="EtiketKunyesi">
 			<h1
 				class="font-display leading-[0.9] font-normal break-words {data.etiket.ad.length > 9

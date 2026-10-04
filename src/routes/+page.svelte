@@ -69,7 +69,7 @@
 		data-plan-etiket="Kahraman · 7/5"
 	>
 		<div
-			class="hero-content grid w-full max-w-none grid-cols-1 items-start gap-12 p-0 lg:grid-cols-12 lg:gap-8"
+			class="hero-content grid w-full max-w-none grid-cols-1 items-start gap-x-sutun gap-y-12 p-0 lg:grid-cols-12 lg:gap-y-8"
 		>
 			<div class="lg:col-span-7">
 				<h1
@@ -186,7 +186,7 @@
 		aria-labelledby="defter-baslik"
 		data-plan-etiket="Defter · 5/7"
 	>
-		<div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+		<div class="grid grid-cols-1 gap-x-sutun gap-y-8 lg:grid-cols-12">
 			<div class="flex flex-col gap-8 lg:col-span-5">
 				<header>
 					<p class="font-mono text-xs font-bold" aria-hidden="true">§01 / YZ</p>
@@ -226,8 +226,8 @@
 		aria-labelledby="parca-baslik"
 		data-plan-etiket="Parçalar · 7/5"
 	>
-		<div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
-			<header class="lg:order-last lg:col-span-5 lg:pl-8">
+		<div class="grid grid-cols-1 gap-x-sutun gap-y-8 lg:grid-cols-12">
+			<header class="lg:order-last lg:col-span-5">
 				<p class="font-mono text-xs font-bold" aria-hidden="true">§02 / PRJ</p>
 				<h2
 					id="parca-baslik"

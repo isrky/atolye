@@ -34,7 +34,7 @@
 	{/if}
 
 	<!-- Kimlik: 7/5 -->
-	<header class="grid gap-10 lg:grid-cols-12 {PLAN}" data-plan-etiket="KimlikBasligi">
+	<header class="grid gap-x-sutun gap-y-10 lg:grid-cols-12 {PLAN}" data-plan-etiket="KimlikBasligi">
 		<div class="lg:col-span-7">
 			<h1 class="font-display text-5xl leading-[0.95] font-normal sm:text-7xl">{site.ad}</h1>
 			<p class="mt-5 max-w-2xl text-xl leading-snug font-semibold">{hakkimda.ozet}</p>
@@ -96,7 +96,7 @@
 	</header>
 
 	<!-- Gövde: 5/7 (mobilde önce deneyim) -->
-	<div class="mt-20 grid gap-12 lg:grid-cols-12">
+	<div class="mt-20 grid gap-x-sutun gap-y-12 lg:grid-cols-12">
 		<section
 			aria-labelledby="deneyim"
 			class="lg:col-span-7 lg:col-start-6 {PLAN}"

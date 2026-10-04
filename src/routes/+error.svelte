@@ -20,7 +20,9 @@
 	/>
 </svelte:head>
 
-<div class="mx-auto grid max-w-7xl gap-12 px-4 py-12 sm:px-6 sm:py-20 lg:grid-cols-12 lg:px-8">
+<div
+	class="mx-auto grid max-w-7xl gap-x-sutun gap-y-12 px-4 py-12 sm:px-6 sm:py-20 lg:grid-cols-12 lg:px-8"
+>
 	<section
 		class="lg:col-span-7 {PLAN}"
 		data-plan-etiket="HataPlakasi"

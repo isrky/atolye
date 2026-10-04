@@ -102,7 +102,10 @@
 </svelte:head>
 
 <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-	<header class="grid items-end gap-8 lg:grid-cols-12 {PLAN}" data-plan-etiket="RafBasligi · 7/5">
+	<header
+		class="grid items-end gap-x-sutun gap-y-8 lg:grid-cols-12 {PLAN}"
+		data-plan-etiket="RafBasligi · 7/5"
+	>
 		<div class="lg:col-span-7">
 			<h1 class="font-display text-5xl leading-none font-normal tracking-tight sm:text-7xl">
 				Parça rafı
@@ -142,7 +145,7 @@
 		aria-label="Rafı süz"
 		data-plan-etiket="RafFiltresi"
 	>
-		<div class="grid gap-5 lg:grid-cols-12">
+		<div class="grid gap-x-sutun gap-y-5 lg:grid-cols-12">
 			<div class="lg:col-span-5">
 				<p id="durum-etiket" class="mb-2 font-mono text-xs font-bold tracking-wider uppercase">
 					Durum
@@ -204,7 +207,7 @@
 
 	{#if suzulmus.length}
 		<ul
-			class="mt-10 grid gap-8 lg:grid-cols-12 {PLAN}"
+			class="mt-10 grid gap-x-sutun gap-y-8 lg:grid-cols-12 {PLAN}"
 			aria-label="Projeler"
 			data-plan-etiket="ParcaRafi · 12 kolon"
 		>

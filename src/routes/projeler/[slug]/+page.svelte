@@ -52,7 +52,7 @@
 	</nav>
 
 	<header
-		class="mt-8 grid items-start gap-10 lg:grid-cols-12 {PLAN}"
+		class="mt-8 grid items-start gap-x-sutun gap-y-10 lg:grid-cols-12 {PLAN}"
 		data-plan-etiket="ParcaBasligi · 7/5"
 	>
 		<div class="min-w-0 lg:col-span-7">
@@ -144,7 +144,7 @@
 		</div>
 	</header>
 
-	<div class="mt-16 grid gap-10 lg:grid-cols-12">
+	<div class="mt-16 grid gap-x-sutun gap-y-10 lg:grid-cols-12">
 		{#if proje.toc.length}
 			<aside class="lg:col-span-4">
 				<nav
@@ -204,7 +204,7 @@
 					<span>Rafın tamamı (<span class="tabular-nums">{data.toplam}</span>)</span>
 				</a>
 			</div>
-			<ul class="mt-8 grid gap-8 lg:grid-cols-12">
+			<ul class="mt-8 grid gap-x-sutun gap-y-8 lg:grid-cols-12">
 				{#each data.digerleri as p, i (p.slug)}
 					<li class="grid {GENISLIK[i % 2]}">
 						<ProjeKarti proje={p} baslikSeviyesi={3} />

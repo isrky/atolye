@@ -26,7 +26,10 @@
 
 <div class="mx-auto flex max-w-7xl flex-col gap-16 px-4 py-10 sm:px-6 sm:py-14 lg:gap-24 lg:px-8">
 	<!-- Kapak: dev başlık + defter etiketi -->
-	<header class="grid gap-8 lg:grid-cols-12 lg:items-end {PLAN}" data-plan-etiket="DefterKapagi">
+	<header
+		class="grid gap-x-sutun gap-y-8 lg:grid-cols-12 lg:items-end {PLAN}"
+		data-plan-etiket="DefterKapagi"
+	>
 		<div class="lg:col-span-7">
 			<h1
 				class="font-display text-7xl leading-[0.85] font-normal tracking-tight sm:text-8xl lg:text-[10rem]"
@@ -84,7 +87,7 @@
 
 	{#if sonSayfa}
 		<!-- 7/5: son sayfa açık duruyor, yanında ayraçlar -->
-		<div class="grid gap-12 lg:grid-cols-12 lg:gap-10">
+		<div class="grid gap-x-sutun gap-y-12 lg:grid-cols-12 lg:gap-y-10">
 			<section aria-labelledby="son-sayfa" class="flex flex-col gap-5 lg:col-span-7">
 				<h2 id="son-sayfa" class="flex items-center gap-3 font-display text-2xl font-normal">
 					<NotebookPen class="size-6" aria-hidden="true" />Son sayfa
@@ -115,7 +118,10 @@
 		</div>
 
 		<!-- 5/7: içindekiler -->
-		<section aria-labelledby="icindekiler" class="grid gap-8 lg:grid-cols-12 lg:gap-10">
+		<section
+			aria-labelledby="icindekiler"
+			class="grid gap-x-sutun gap-y-8 lg:grid-cols-12 lg:gap-y-10"
+		>
 			<div class="lg:col-span-5">
 				<div class="flex flex-col gap-4 lg:sticky lg:top-24">
 					<h2 id="icindekiler" class="font-display text-5xl leading-none font-normal sm:text-6xl">

@@ -36,7 +36,9 @@
 	class="pointer-events-none fixed inset-0 z-40 hidden bg-[linear-gradient(to_right,color-mix(in_oklch,var(--color-accent)_14%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklch,var(--color-accent)_14%,transparent)_1px,transparent_1px)] bg-size-[8px_8px] in-data-plan:block"
 	aria-hidden="true"
 >
-	<div class="mx-auto grid h-full max-w-7xl grid-cols-4 gap-6 px-4 sm:px-6 lg:grid-cols-12 lg:px-8">
+	<div
+		class="mx-auto grid h-full max-w-7xl grid-cols-4 gap-x-6 px-4 sm:px-6 lg:grid-cols-12 lg:gap-x-sutun lg:px-8"
+	>
 		{#each Array.from({ length: 12 }, (_, i) => i) as k (k)}
 			<div
 				class="h-full border-x border-dashed border-accent/50 bg-accent/5 {k >= 4

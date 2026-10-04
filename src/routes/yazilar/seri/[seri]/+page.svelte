@@ -26,7 +26,7 @@
 <div class="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
 	<Kirintilar yol={[{ etiket: 'Seriler', href: '/yazilar#seriler' }, { etiket: data.seri.ad }]} />
 
-	<div class="grid gap-10 lg:grid-cols-12">
+	<div class="grid gap-x-sutun gap-y-10 lg:grid-cols-12">
 		<header class="flex flex-col gap-6 lg:col-span-5 {PLAN}" data-plan-etiket="SeriKunyesi">
 			<span
 				class="flex w-fit items-center gap-2 border-2 border-base-content bg-accent px-2 py-1 font-mono text-xs font-bold text-accent-content tabular-nums"

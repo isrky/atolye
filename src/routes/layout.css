@@ -87,6 +87,8 @@
 }
 
 @theme {
+	/* 12 kolonlu sayfa ızgarasının sütun aralığı; Plan modu katmanı da bunu kullanır. */
+	--spacing-sutun: 2rem;
 	--font-display: 'Bricolage Grotesque Variable', 'Arial Black', system-ui, sans-serif;
 	/* Başlıklar her zaman 800: font-normal/bold sınıflarından bağımsız. Optik boyut otomatik. */
 	--font-display--font-variation-settings: 'wght' 800;
