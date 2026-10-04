@@ -25,7 +25,7 @@ test('komut paleti Ctrl+K ile açılır ve yazıya götürür', async ({ page })
 	await palet.getByRole('combobox').fill('tezgah nasıl');
 	await expect(palet.getByRole('option').first()).toContainText('Bu tezgah nasıl kuruldu');
 	await page.keyboard.press('Enter');
-	await expect(page).toHaveURL('/yazilar/bu-tezgah-nasil-kuruldu');
+	await expect(page).toHaveURL('/yazilar/yz-003');
 });
 
 test('tema seçimi yeniden yüklemede korunur', async ({ page }) => {
@@ -52,7 +52,7 @@ test('damga basılır ve yeniden yüklemede kalır', async ({ browser }) => {
 	// Her koşu yeni bir ziyaretçi: damgalar günde bir kez sayılır.
 	const ctx = await browser.newContext({ userAgent: `e2e-${Date.now()}-${Math.random()}` });
 	const page = await ctx.newPage();
-	await page.goto('/yazilar/bu-tezgah-nasil-kuruldu');
+	await page.goto('/yazilar/yz-003');
 	const damga = page.getByRole('button', { name: /Kahvelik/ });
 	await expect(damga).toBeEnabled();
 	await expect(damga).toHaveAttribute('aria-pressed', 'false');
@@ -76,9 +76,9 @@ test('olmayan sayfa 404 döner', async ({ page }) => {
 });
 
 test('yazı kendi önizleme görselini bildirir', async ({ page, request }) => {
-	await page.goto('/yazilar/canli-sayaclar-1-d1');
+	await page.goto('/yazilar/yz-001');
 	const gorsel = await page.locator('meta[property="og:image"]').getAttribute('content');
-	expect(gorsel).toMatch(/\/paylas\/yazilar\/canli-sayaclar-1-d1\/embed\.png$/);
+	expect(gorsel).toMatch(/\/paylas\/yazilar\/yz-001\/embed\.png$/);
 	await expect(page.locator('meta[property="og:image"]')).toHaveCount(1);
 	const yanit = await request.get(new URL(gorsel!).pathname);
 	expect(yanit.status()).toBe(200);
@@ -86,19 +86,27 @@ test('yazı kendi önizleme görselini bildirir', async ({ page, request }) => {
 });
 
 test('Paylaş penceresi görsel indirme ve bağlantı seçenekleri sunar', async ({ page, request }) => {
-	await page.goto('/yazilar/bu-tezgah-nasil-kuruldu');
+	await page.goto('/yazilar/yz-003');
 	await page.waitForLoadState('networkidle');
 	await page.getByRole('button', { name: 'Paylaş', exact: true }).click();
 	const pencere = page.getByRole('dialog', { name: 'Bu sayfayı paylaş' });
 	await expect(pencere).toBeVisible();
 	const indir = pencere.getByRole('link', { name: 'Görseli indir' });
-	await expect(indir).toHaveAttribute('download', 'isrky-bu-tezgah-nasil-kuruldu.png');
+	await expect(indir).toHaveAttribute('download', 'isrky-yz-003.png');
 	const yanit = await request.get((await indir.getAttribute('href'))!);
 	expect(yanit.status()).toBe(200);
 	await expect(pencere.getByRole('link', { name: /WhatsApp/ })).toHaveAttribute(
 		'href',
-		new RegExp(encodeURIComponent('/yazilar/bu-tezgah-nasil-kuruldu'))
+		new RegExp(encodeURIComponent('/yazilar/yz-003'))
 	);
 	await page.keyboard.press('Escape');
 	await expect(pencere).toBeHidden();
+});
+
+test('yazılar kısa numaralı adreste; eski ve bilinmeyen adresler 404', async ({ page }) => {
+	const yanit = await page.goto('/yazilar/yz-002');
+	expect(yanit?.status()).toBe(200);
+	await expect(page.locator('h1')).toContainText('Lastik damgalar');
+	for (const yol of ['/yazilar/bu-tezgah-nasil-kuruldu', '/yazilar/yz-999'])
+		expect((await page.goto(yol))?.status()).toBe(404);
 });

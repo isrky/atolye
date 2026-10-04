@@ -15,7 +15,11 @@ bun run dev
 
 ## Yeni yazı
 
-`src/content/yazilar/<kisa-ad>/index.md` oluştur:
+`src/content/yazilar/<NNN>-<kisa-ad>/index.md` oluştur, örneğin `004-yeni-yazi/index.md`.
+
+- Numara (`004`) yazının kalıcı adresini belirler: **`/yazilar/yz-004`**. Tarih değişse ya da eski tarihli bir yazı eklense de numaralar kaymaz.
+- Bir sonraki boş numarayı kullan; numaraları yeniden kullanma, yayımlanmış bir yazının numarasını değiştirme. Aynı numara ya da aynı kısa ad iki kez kullanılırsa derleme hata verir.
+- Kısa ad (`yeni-yazi`) görünmez ama görüntülenme/damga sayaçlarının anahtarıdır; yayımladıktan sonra değiştirme.
 
 ```md
 ---
@@ -50,7 +54,7 @@ Yazı içi bileşenler (`src/lib/markdown/`):
 
 ### Paylaşım görselleri
 
-Her yazı için bağlantı önizlemesi (`static/paylas/yazilar/<slug>/embed.png`, 1200×630) ve indirilebilir sosyal görsel (`sosyal.png`, 1080×1440, 3:4) `scripts/paylasim.ts` ile üretilir. `bun run build` bunu otomatik çalıştırır; yalnızca değişen yazılar yeniden çizilir (Playwright Chromium gerekir). Üretilen görselleri depoya ekle — `bunx vitest run` eksik ya da eskimiş görseli yakalar. Şablonu değiştirince `SABLON_SURUMU` değerini artır.
+Her yazı için bağlantı önizlemesi (`static/paylas/yazilar/yz-NNN/embed.png`, 1200×630) ve indirilebilir sosyal görsel (`sosyal.png`, 1080×1440, 3:4) `scripts/paylasim.ts` ile üretilir. `bun run build` bunu otomatik çalıştırır; yalnızca değişen yazılar yeniden çizilir (Playwright Chromium gerekir). Üretilen görselleri depoya ekle — `bunx vitest run` eksik ya da eskimiş görseli yakalar. Şablonu değiştirince `SABLON_SURUMU` değerini artır.
 
 ## Yeni proje
 

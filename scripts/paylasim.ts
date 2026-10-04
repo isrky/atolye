@@ -15,7 +15,7 @@ const CIKTI = join(KOK, 'static/paylas');
 const MANIFEST = join(CIKTI, 'manifest.json');
 const VARSAYILAN = join(KOK, 'static/og/varsayilan.png');
 // Şablonu değiştirince artır: tüm görseller yeniden üretilir.
-const SABLON_SURUMU = 2;
+const SABLON_SURUMU = 3;
 
 // ---------- İçerik ----------
 
@@ -24,13 +24,13 @@ async function yazilariOku() {
 	// Yerleşim (layout) bileşeni burada gerekmez; yalnızca meta veri alınıyor.
 	const ayarlar = { ...mdsvexAyarlari, layout: undefined };
 	const moduller: Record<string, Record<string, unknown>> = {};
-	for (const slug of readdirSync(klasor)) {
-		const dosya = join(klasor, slug, 'index.md');
+	for (const ad of readdirSync(klasor)) {
+		const dosya = join(klasor, ad, 'index.md');
 		if (!existsSync(dosya)) continue;
 		// Sitenin kendi mdsvex ayarlarıyla derle: ön bilgi + okuma süresi birebir aynı olur.
 		const sonuc = await compile(readFileSync(dosya, 'utf8'), { ...ayarlar, filename: dosya });
 		const meta = sonuc?.code.match(/export const metadata = (\{.*\});/)?.[1];
-		moduller[`/src/content/yazilar/${slug}/index.md`] = meta ? JSON.parse(meta) : {};
+		moduller[`/src/content/yazilar/${ad}/index.md`] = meta ? JSON.parse(meta) : {};
 	}
 	return yazilariDerle(moduller, false);
 }
@@ -45,7 +45,7 @@ const ozetle = (y: Yazi) =>
 		.update(
 			JSON.stringify([
 				SABLON_SURUMU,
-				y.slug,
+				y.kimlik,
 				y.seriNo,
 				y.baslik,
 				y.ozet,
@@ -184,7 +184,7 @@ h1{font-size:112px}
 	<h1>${kacis(y.baslik)}</h1>
 	<p class="ozet">${kacis(y.ozet)}</p>
 	<div class="etiketler">${etiketler}</div>
-	<div class="adres"><span>${tarihYaz(y.tarih)} · ${y.okumaSuresi} dk okuma</span><b>isrky.com/yazilar/${kacis(y.slug)}</b></div>
+	<div class="adres"><span>${tarihYaz(y.tarih)} · ${y.okumaSuresi} dk okuma</span><b>isrky.com${y.yol}</b></div>
 </div></div>
 <div class="damga">isrky.com</div>
 ${sigdir('h1', 5, 56)}
@@ -263,20 +263,20 @@ async function main() {
 
 	for (const y of yazilar) {
 		const ozet = ozetle(y);
-		yeni[y.slug] = ozet;
-		const klasor = join(CIKTI, 'yazilar', y.slug);
+		yeni[y.kimlik] = ozet;
+		const klasor = join(CIKTI, 'yazilar', y.kimlik);
 		const embed = join(klasor, 'embed.png');
 		const sosyal = join(klasor, 'sosyal.png');
-		if (!zorla && eski[y.slug] === ozet && existsSync(embed) && existsSync(sosyal)) continue;
+		if (!zorla && eski[y.kimlik] === ozet && existsSync(embed) && existsSync(sosyal)) continue;
 		isler.push({
-			ad: `${y.seriNo} ${y.slug} · önizleme`,
+			ad: `${y.seriNo} ${y.klasor} · önizleme`,
 			html: embedHtml(y),
 			dosya: embed,
 			genislik: 1200,
 			yukseklik: 630
 		});
 		isler.push({
-			ad: `${y.seriNo} ${y.slug} · sosyal`,
+			ad: `${y.seriNo} ${y.klasor} · sosyal`,
 			html: sosyalHtml(y),
 			dosya: sosyal,
 			genislik: 1080,
@@ -287,10 +287,10 @@ async function main() {
 	// Silinen yazıların görsellerini temizle.
 	const yaziKlasoru = join(CIKTI, 'yazilar');
 	if (existsSync(yaziKlasoru))
-		for (const slug of readdirSync(yaziKlasoru))
-			if (!(slug in yeni)) {
-				rmSync(join(yaziKlasoru, slug), { recursive: true });
-				console.log(`  − ${slug} (silindi)`);
+		for (const kimlik of readdirSync(yaziKlasoru))
+			if (!(kimlik in yeni)) {
+				rmSync(join(yaziKlasoru, kimlik), { recursive: true });
+				console.log(`  − ${kimlik} (silindi)`);
 			}
 
 	if (isler.length) {

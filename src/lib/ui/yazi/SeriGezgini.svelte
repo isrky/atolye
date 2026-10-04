@@ -2,7 +2,7 @@
 	import { ArrowLeft, ArrowRight, Layers } from '@lucide/svelte';
 	import { PLAN } from '#lib/ui/tercihler.svelte.ts';
 
-	type Bolum = { slug: string; seriNo: string; baslik: string; sira: number };
+	type Bolum = { slug: string; yol: string; seriNo: string; baslik: string; sira: number };
 
 	// Seri gezgini: serinin bütün bölümleri sırayla, bu sayfa işaretli; altta önceki/sonraki.
 	let {
@@ -41,7 +41,7 @@
 						<span class="font-semibold" aria-current="page">{b.baslik}</span>
 						<span class="font-mono text-xs">← şu an bu sayfadasın</span>
 					{:else}
-						<a href="/yazilar/{b.slug}" class="link decoration-2 underline-offset-4">{b.baslik}</a>
+						<a href={b.yol} class="link decoration-2 underline-offset-4">{b.baslik}</a>
 					{/if}
 				</span>
 			</li>
@@ -52,7 +52,7 @@
 		<div class="mt-4 grid gap-3 border-t-2 border-base-content pt-4">
 			{#if onceki}
 				<a
-					href="/yazilar/{onceki.slug}"
+					href={onceki.yol}
 					rel="prev"
 					class="group flex items-start gap-3 border-2 border-base-content bg-base-200 p-3 shadow-sert-sm transition-[translate,box-shadow] duration-150 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none"
 				>
@@ -65,7 +65,7 @@
 			{/if}
 			{#if sonraki}
 				<a
-					href="/yazilar/{sonraki.slug}"
+					href={sonraki.yol}
 					rel="next"
 					class="group flex items-start justify-between gap-3 border-2 border-base-content bg-primary p-3 text-primary-content shadow-sert-sm transition-[translate,box-shadow] duration-150 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none"
 				>

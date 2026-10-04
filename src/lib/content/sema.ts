@@ -3,8 +3,14 @@ import { slugify } from './slug.js';
 export type TocOgesi = { id: string; metin: string; seviye: number };
 
 export type Yazi = {
+	/** Klasördeki numara: 003-… → 3. Hiç değişmez; adres buna dayanır. */
+	no: number;
+	seriNo: string; // YZ-003
+	kimlik: string; // yz-003 (adres parçası)
+	yol: string; // /yazilar/yz-003
+	klasor: string; // 003-bu-tezgah-nasil-kuruldu
+	/** Numarasız ad; sayaç anahtarı (yazi:<slug>) olarak kalıcıdır. */
 	slug: string;
-	seriNo: string; // YZ-001
 	baslik: string;
 	ozet: string;
 	tarih: string;
@@ -71,8 +77,23 @@ export function slugDosyadan(yol: string) {
 	return m[1];
 }
 
-export function yaziAyristir(yol: string, ham: Ham): Omit<Yazi, 'seriNo'> {
-	const slug = slugDosyadan(yol);
+const pad = (n: number) => String(n).padStart(3, '0');
+
+/** Yazı klasörü: NNN-kisa-ad (ör. 003-bu-tezgah-nasil-kuruldu). */
+export function yaziKlasoru(yol: string) {
+	const klasor = slugDosyadan(yol);
+	const m = klasor.match(/^(\d{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)$/);
+	if (!m)
+		throw new IcerikHatasi(
+			`${yol}: yazı klasörü "NNN-kisa-ad" biçiminde olmalı (ör. 004-yeni-yazi). Numara adresi belirler ve sonradan değişmez.`
+		);
+	const no = Number(m[1]);
+	if (no < 1) throw new IcerikHatasi(`${yol}: yazı numarası 1'den başlamalı`);
+	return { klasor, no, slug: m[2], seriNo: `YZ-${pad(no)}`, kimlik: `yz-${pad(no)}` };
+}
+
+export function yaziAyristir(yol: string, ham: Ham): Yazi {
+	const { klasor, no, slug, seriNo, kimlik } = yaziKlasoru(yol);
 	let seri: Yazi['seri'];
 	if (ham.seri !== undefined) {
 		const s = ham.seri as Ham;
@@ -83,6 +104,11 @@ export function yaziAyristir(yol: string, ham: Ham): Omit<Yazi, 'seriNo'> {
 		seri = { ad, slug: slugify(ad), sira };
 	}
 	return {
+		no,
+		seriNo,
+		kimlik,
+		yol: `/yazilar/${kimlik}`,
+		klasor,
 		slug,
 		baslik: metin(ham, 'baslik', yol),
 		ozet: metin(ham, 'ozet', yol),

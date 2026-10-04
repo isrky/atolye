@@ -44,7 +44,7 @@
 				: 'text-xl sm:text-2xl'}"
 		>
 			<a
-				href="/yazilar/{yazi.slug}"
+				href={yazi.yol}
 				class="decoration-2 underline-offset-4 group-focus-within:underline group-hover:underline after:absolute after:inset-0 focus-visible:outline-none"
 				>{yazi.baslik}</a
 			>

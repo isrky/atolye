@@ -26,7 +26,7 @@
 	let { data }: PageProps = $props();
 
 	const yazi = $derived(data.yazi);
-	const adres = $derived(`${site.url}/yazilar/${yazi.slug}`);
+	const adres = $derived(`${site.url}${yazi.yol}`);
 
 	// Her yazı kendi canlı sayacını alır; istemci tarafı geçişte yeni örnek oluşur ve yeniden başlar.
 	const canli = $derived(new CanliIcerik('yazi', data.yazi.slug));
@@ -207,7 +207,7 @@
 						ozet={yazi.ozet}
 						{adres}
 						gorsel={data.paylasim.sosyal}
-						dosyaAdi="isrky-{yazi.slug}.png"
+						dosyaAdi="isrky-{yazi.kimlik}.png"
 					/>
 				</div>
 			</aside>

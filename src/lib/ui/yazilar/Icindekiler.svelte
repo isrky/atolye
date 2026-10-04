@@ -45,7 +45,7 @@
 						class="min-w-0 font-display text-lg leading-snug font-normal text-balance sm:text-xl"
 					>
 						<a
-							href="/yazilar/{y.slug}"
+							href={y.yol}
 							class="decoration-2 underline-offset-4 group-hover:underline after:absolute after:inset-0 focus-visible:underline focus-visible:outline-none"
 							>{y.baslik}</a
 						>

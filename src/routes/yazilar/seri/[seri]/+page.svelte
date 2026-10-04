@@ -50,7 +50,7 @@
 			<div class="flex flex-wrap gap-3">
 				{#if ilk}
 					<a
-						href="/yazilar/{ilk.slug}"
+						href={ilk.yol}
 						class="btn gap-2 border-2 border-base-content shadow-sert-sm transition-[translate,box-shadow] duration-150 btn-primary hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none motion-reduce:transition-none"
 					>
 						<BookOpen class="size-4" aria-hidden="true" />1. bölümden başla

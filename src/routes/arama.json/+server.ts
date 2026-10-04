@@ -12,7 +12,7 @@ export function GET() {
 			tur: 'yazi' as const,
 			baslik: y.baslik,
 			aciklama: `${y.seriNo} · ${y.ozet}`,
-			href: `/yazilar/${y.slug}`,
+			href: y.yol,
 			ekler: [...y.etiketler, y.seri?.ad ?? ''].join(' ')
 		})),
 		...projeler.map((p) => ({

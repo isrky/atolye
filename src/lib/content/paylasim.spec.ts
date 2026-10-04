@@ -3,10 +3,13 @@ import { describe, expect, it } from 'vitest';
 
 // Her yazının paylaşım görselleri depoda ve doğru boyutta mı?
 // Başarısızsa: `bun run paylasim` çalıştırıp görselleri depoya ekle.
-const yazilar = readdirSync('src/content/yazilar').filter((slug) => {
-	const dosya = `src/content/yazilar/${slug}/index.md`;
-	return existsSync(dosya) && !/^taslak:\s*true/m.test(readFileSync(dosya, 'utf8'));
-});
+// Klasör 003-ad → görsel klasörü yz-003.
+const yazilar = readdirSync('src/content/yazilar')
+	.filter((klasor) => {
+		const dosya = `src/content/yazilar/${klasor}/index.md`;
+		return existsSync(dosya) && !/^taslak:\s*true/m.test(readFileSync(dosya, 'utf8'));
+	})
+	.map((klasor) => `yz-${klasor.split('-')[0]}`);
 const manifest: Record<string, string> = JSON.parse(
 	readFileSync('static/paylas/manifest.json', 'utf8')
 );
@@ -19,10 +22,10 @@ function boyut(dosya: string) {
 }
 
 describe('paylaşım görselleri', () => {
-	it.each(yazilar)('%s için önizleme 1200×630, sosyal 1080×1440', (slug) => {
-		expect(boyut(`static/paylas/yazilar/${slug}/embed.png`)).toEqual([1200, 630]);
-		expect(boyut(`static/paylas/yazilar/${slug}/sosyal.png`)).toEqual([1080, 1440]);
-		expect(manifest[slug], 'manifest kaydı yok: bun run paylasim').toBeTruthy();
+	it.each(yazilar)('%s için önizleme 1200×630, sosyal 1080×1440', (kimlik) => {
+		expect(boyut(`static/paylas/yazilar/${kimlik}/embed.png`)).toEqual([1200, 630]);
+		expect(boyut(`static/paylas/yazilar/${kimlik}/sosyal.png`)).toEqual([1080, 1440]);
+		expect(manifest[kimlik], 'manifest kaydı yok: bun run paylasim').toBeTruthy();
 	});
 
 	it('varsayılan önizleme 1200×630', () => {

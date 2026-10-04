@@ -20,7 +20,7 @@
 					{#each s.yazilar as y (y.slug)}
 						<li class="step" data-content={y.seri?.sira}>
 							<a
-								href="/yazilar/{y.slug}"
+								href={y.yol}
 								class="link text-start text-sm leading-snug link-hover decoration-2 underline-offset-4"
 								>{y.baslik}</a
 							>

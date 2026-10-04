@@ -11,8 +11,8 @@ export function GET() {
 		.map(
 			(y) => `		<item>
 			<title>${kacis(y.baslik)}</title>
-			<link>${site.url}/yazilar/${y.slug}</link>
-			<guid isPermaLink="true">${site.url}/yazilar/${y.slug}</guid>
+			<link>${site.url}${y.yol}</link>
+			<guid isPermaLink="true">${site.url}${y.yol}</guid>
 			<pubDate>${new Date(y.tarih).toUTCString()}</pubDate>
 			<description>${kacis(y.ozet)}</description>
 ${y.etiketler.map((e) => `			<category>${kacis(e)}</category>`).join('\n')}

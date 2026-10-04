@@ -6,7 +6,7 @@ export const prerender = true;
 export function GET() {
 	const yollar = [
 		...gezinti.map((g) => g.href),
-		...yazilar.map((y) => `/yazilar/${y.slug}`),
+		...yazilar.map((y) => y.yol),
 		...projeler.map((p) => `/projeler/${p.slug}`),
 		...tumEtiketler.map((e) => `/yazilar/etiket/${e.slug}`),
 		...tumSeriler.map((s) => `/yazilar/seri/${s.slug}`)

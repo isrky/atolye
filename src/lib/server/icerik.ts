@@ -26,7 +26,8 @@ export const projeler: Proje[] = projeleriDerle(projeMetalari);
 export const tumEtiketler = etiketler(yazilar);
 export const tumSeriler = seriler(yazilar);
 
-export const yaziBul = (slug: string) => yazilar.find((y) => y.slug === slug);
+/** Adres parçasıyla (yz-003) yazı bulur. */
+export const yaziBul = (kimlik: string) => yazilar.find((y) => y.kimlik === kimlik);
 export const projeBul = (slug: string) => projeler.find((p) => p.slug === slug);
 export const ilgili = (y: Yazi) => ilgiliYazilar(y, yazilar);
 export const etiketliYazilar = (etiketSlug: string) =>

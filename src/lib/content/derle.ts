@@ -1,7 +1,7 @@
 // Saf işlevler: ham meta verisinden sıralı, numaralı içerik listeleri üretir.
 // Hem uygulama hem testler kullanır.
 import { slugify } from './slug.js';
-import { projeAyristir, yaziAyristir, type Proje, type Yazi } from './sema.ts';
+import { IcerikHatasi, projeAyristir, yaziAyristir, type Proje, type Yazi } from './sema.ts';
 
 type Modul = Record<string, Record<string, unknown>>;
 
@@ -9,12 +9,22 @@ const no = (onek: string, i: number) => `${onek}-${String(i).padStart(3, '0')}`;
 
 export function yazilariDerle(moduller: Modul, taslaklariGoster: boolean): Yazi[] {
 	const hepsi = Object.entries(moduller).map(([yol, ham]) => yaziAyristir(yol, ham));
-	// Seri numarası yayın sırasına göre sabittir: en eski yazı YZ-001.
+	// Numara klasörden gelir ve adresi belirler; çakışma derlemeyi durdurur.
+	// Taslaklar da kontrol edilir: yayımlandıklarında numaraları boşta olmalı.
+	// Ad da tekil olmalı: sayaç/damga anahtarı "yazi:<ad>" ile tutulur.
+	const numaralar = new Map<number, string>();
+	const adlar = new Map<string, string>();
+	for (const y of hepsi) {
+		const ayniNo = numaralar.get(y.no);
+		if (ayniNo) throw new IcerikHatasi(`${y.seriNo} iki kez kullanılmış: ${ayniNo} ve ${y.klasor}`);
+		const ayniAd = adlar.get(y.slug);
+		if (ayniAd) throw new IcerikHatasi(`"${y.slug}" adı iki yazıda var: ${ayniAd} ve ${y.klasor}`);
+		numaralar.set(y.no, y.klasor);
+		adlar.set(y.slug, y.klasor);
+	}
 	return hepsi
 		.filter((y) => taslaklariGoster || !y.taslak)
-		.sort((a, b) => a.tarih.localeCompare(b.tarih) || a.slug.localeCompare(b.slug))
-		.map((y, i) => ({ ...y, seriNo: no('YZ', i + 1) }))
-		.reverse();
+		.sort((a, b) => b.tarih.localeCompare(a.tarih) || b.no - a.no);
 }
 
 export function projeleriDerle(moduller: Modul): Proje[] {
