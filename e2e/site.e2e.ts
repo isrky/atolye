@@ -74,3 +74,31 @@ test('olmayan sayfa 404 döner', async ({ page }) => {
 	expect(yanit?.status()).toBe(404);
 	await expect(page.getByText(/tezgahta yok/i).first()).toBeVisible();
 });
+
+test('yazı kendi önizleme görselini bildirir', async ({ page, request }) => {
+	await page.goto('/yazilar/canli-sayaclar-1-d1');
+	const gorsel = await page.locator('meta[property="og:image"]').getAttribute('content');
+	expect(gorsel).toMatch(/\/paylas\/yazilar\/canli-sayaclar-1-d1\/embed\.png$/);
+	await expect(page.locator('meta[property="og:image"]')).toHaveCount(1);
+	const yanit = await request.get(new URL(gorsel!).pathname);
+	expect(yanit.status()).toBe(200);
+	expect(yanit.headers()['content-type']).toContain('image/png');
+});
+
+test('Paylaş penceresi görsel indirme ve bağlantı seçenekleri sunar', async ({ page, request }) => {
+	await page.goto('/yazilar/bu-tezgah-nasil-kuruldu');
+	await page.waitForLoadState('networkidle');
+	await page.getByRole('button', { name: 'Paylaş', exact: true }).click();
+	const pencere = page.getByRole('dialog', { name: 'Bu sayfayı paylaş' });
+	await expect(pencere).toBeVisible();
+	const indir = pencere.getByRole('link', { name: 'Görseli indir' });
+	await expect(indir).toHaveAttribute('download', 'isrky-bu-tezgah-nasil-kuruldu.png');
+	const yanit = await request.get((await indir.getAttribute('href'))!);
+	expect(yanit.status()).toBe(200);
+	await expect(pencere.getByRole('link', { name: /WhatsApp/ })).toHaveAttribute(
+		'href',
+		new RegExp(encodeURIComponent('/yazilar/bu-tezgah-nasil-kuruldu'))
+	);
+	await page.keyboard.press('Escape');
+	await expect(pencere).toBeHidden();
+});

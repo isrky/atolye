@@ -16,6 +16,15 @@
 
 	let { children }: LayoutProps = $props();
 
+	// Bağlantı önizlemesi: sayfa kendi görselini verirse onu, yoksa sitenin varsayılanını kullan.
+	type Onizleme = { embed: string; alt: string };
+	const onizleme = $derived(
+		(page.data as { paylasim?: Onizleme }).paylasim ?? {
+			embed: '/og/varsayilan.png',
+			alt: `${site.ad} — yazılar, projeler, bağlantılar`
+		}
+	);
+
 	let palet: KomutPaleti;
 	let cekmece = $state(false);
 
@@ -34,10 +43,12 @@
 	<link rel="alternate" type="application/rss+xml" title="{site.ad} — Yazılar" href="/rss.xml" />
 	<meta property="og:site_name" content={site.ad} />
 	<meta property="og:locale" content="tr_TR" />
-	<meta property="og:image" content="{site.url}/og/varsayilan.png" />
+	<meta property="og:image" content="{site.url}{onizleme.embed}" />
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content={onizleme.alt} />
 	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:image" content="{site.url}{onizleme.embed}" />
 </svelte:head>
 
 <a

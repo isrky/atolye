@@ -13,13 +13,14 @@
 	} from '@lucide/svelte';
 	import { site, tarihYaz } from '#lib/site.ts';
 	import { CanliIcerik } from '#lib/ui/canli.svelte.ts';
-	import { bildir } from '#lib/ui/bildirim.svelte.ts';
+	import { baglantiKopyala } from '#lib/ui/kopyala.ts';
 	import { PLAN } from '#lib/ui/tercihler.svelte.ts';
 	import Sayac from '#lib/ui/Sayac.svelte';
 	import Damgalar from '#lib/ui/Damgalar.svelte';
 	import YaziKarti from '#lib/ui/YaziKarti.svelte';
 	import Icindekiler from '#lib/ui/yazi/Icindekiler.svelte';
 	import SeriGezgini from '#lib/ui/yazi/SeriGezgini.svelte';
+	import Paylas from '#lib/ui/yazi/Paylas.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -69,15 +70,6 @@
 			removeEventListener('resize', planla);
 		};
 	});
-
-	async function baglantiyiKopyala() {
-		try {
-			await navigator.clipboard.writeText(adres);
-			bildir('Sayfanın bağlantısı panoya kopyalandı.');
-		} catch {
-			bildir('Bağlantı kopyalanamadı; adres çubuğundan kopyalayabilirsin.', 'hata');
-		}
-	}
 </script>
 
 <svelte:head>
@@ -206,10 +198,17 @@
 					<button
 						type="button"
 						class="btn ml-auto gap-2 border-2 border-base-content shadow-sert-sm transition-[translate,box-shadow] duration-150 btn-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none motion-reduce:transition-none"
-						onclick={baglantiyiKopyala}
+						onclick={() => baglantiKopyala(adres)}
 					>
 						<Copy class="size-4" aria-hidden="true" />Bağlantıyı kopyala
 					</button>
+					<Paylas
+						baslik={yazi.baslik}
+						ozet={yazi.ozet}
+						{adres}
+						gorsel={data.paylasim.sosyal}
+						dosyaAdi="isrky-{yazi.slug}.png"
+					/>
 				</div>
 			</aside>
 		</header>

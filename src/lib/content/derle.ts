@@ -1,7 +1,7 @@
 // Saf işlevler: ham meta verisinden sıralı, numaralı içerik listeleri üretir.
 // Hem uygulama hem testler kullanır.
 import { slugify } from './slug.js';
-import { projeAyristir, yaziAyristir, type Proje, type Yazi } from './sema';
+import { projeAyristir, yaziAyristir, type Proje, type Yazi } from './sema.ts';
 
 type Modul = Record<string, Record<string, unknown>>;
 

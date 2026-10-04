@@ -23,6 +23,12 @@ export const load: PageServerLoad = ({ params }) => {
 		seri: seriKaydi ? { ad: seriKaydi.ad, slug: seriKaydi.slug, bolumler } : undefined,
 		onceki: konum > 0 ? bolumler[konum - 1] : undefined,
 		sonraki: konum >= 0 && konum < bolumler.length - 1 ? bolumler[konum + 1] : undefined,
-		ilgili: ilgili(yazi)
+		ilgili: ilgili(yazi),
+		// scripts/paylasim.ts ile üretilir (static/paylas/...).
+		paylasim: {
+			embed: `/paylas/yazilar/${yazi.slug}/embed.png`,
+			sosyal: `/paylas/yazilar/${yazi.slug}/sosyal.png`,
+			alt: yazi.baslik
+		}
 	};
 };

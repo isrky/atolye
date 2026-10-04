@@ -48,6 +48,10 @@ Yazı içi bileşenler (`src/lib/markdown/`):
 
 Ön bilgi derleme anında doğrulanır; eksik/yanlış alan derlemeyi anlaşılır bir hatayla durdurur.
 
+### Paylaşım görselleri
+
+Her yazı için bağlantı önizlemesi (`static/paylas/yazilar/<slug>/embed.png`, 1200×630) ve indirilebilir sosyal görsel (`sosyal.png`, 1080×1440, 3:4) `scripts/paylasim.ts` ile üretilir. `bun run build` bunu otomatik çalıştırır; yalnızca değişen yazılar yeniden çizilir (Playwright Chromium gerekir). Üretilen görselleri depoya ekle — `bunx vitest run` eksik ya da eskimiş görseli yakalar. Şablonu değiştirince `SABLON_SURUMU` değerini artır.
+
 ## Yeni proje
 
 `src/content/projeler/<kisa-ad>/index.md` — alanlar: `baslik, ozet, rol, yigin[], yil, durum (yayinda|devam|arsiv), baglantilar{kaynak?, canli?}, one_cikan?, sira`.
