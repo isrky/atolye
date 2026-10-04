@@ -1,0 +1,103 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@import '@fontsource-variable/bricolage-grotesque/opsz.css';
+@import '@fontsource/dm-sans/400.css';
+@import '@fontsource/dm-sans/400-italic.css';
+@import '@fontsource/dm-sans/600.css';
+@import '@fontsource/dm-sans/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/700.css';
+@import '@fontsource/caveat/700.css';
+
+@plugin 'daisyui' {
+	themes: false;
+}
+
+/* Tezgah: gündüz atölyesi — kâğıt, mürekkep, fosforlu kalem. */
+@plugin 'daisyui/theme' {
+	name: 'tezgah';
+	default: true;
+	prefersdark: false;
+	color-scheme: light;
+	--color-base-100: oklch(97.5% 0.012 92);
+	--color-base-200: oklch(94% 0.018 92);
+	--color-base-300: oklch(89% 0.022 92);
+	--color-base-content: oklch(19% 0.012 265);
+	--color-primary: oklch(89% 0.175 100);
+	--color-primary-content: oklch(19% 0.012 265);
+	--color-secondary: oklch(78% 0.16 350);
+	--color-secondary-content: oklch(17% 0.02 350);
+	--color-accent: oklch(48% 0.2 263);
+	--color-accent-content: oklch(98% 0.008 263);
+	--color-neutral: oklch(19% 0.012 265);
+	--color-neutral-content: oklch(97.5% 0.012 92);
+	--color-info: oklch(55% 0.16 240);
+	--color-info-content: oklch(98% 0.01 240);
+	--color-success: oklch(72% 0.17 150);
+	--color-success-content: oklch(18% 0.03 150);
+	--color-warning: oklch(83% 0.16 75);
+	--color-warning-content: oklch(20% 0.03 75);
+	--color-error: oklch(57% 0.22 22);
+	--color-error-content: oklch(98% 0.01 27);
+	--radius-selector: 0rem;
+	--radius-field: 0rem;
+	--radius-box: 0rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 2px;
+	--depth: 0;
+	--noise: 1;
+}
+
+/* Gece vardiyası: aynı tezgah, lamba ışığında. */
+@plugin 'daisyui/theme' {
+	name: 'gece-vardiyasi';
+	default: false;
+	prefersdark: false;
+	color-scheme: dark;
+	--color-base-100: oklch(20% 0.022 265);
+	--color-base-200: oklch(24% 0.026 265);
+	--color-base-300: oklch(29% 0.03 265);
+	--color-base-content: oklch(94% 0.016 92);
+	--color-primary: oklch(89% 0.175 100);
+	--color-primary-content: oklch(19% 0.012 265);
+	--color-secondary: oklch(72% 0.2 350);
+	--color-secondary-content: oklch(17% 0.02 350);
+	--color-accent: oklch(74% 0.13 250);
+	--color-accent-content: oklch(17% 0.03 265);
+	--color-neutral: oklch(13% 0.018 265);
+	--color-neutral-content: oklch(94% 0.016 92);
+	--color-info: oklch(72% 0.13 240);
+	--color-info-content: oklch(17% 0.03 240);
+	--color-success: oklch(76% 0.16 150);
+	--color-success-content: oklch(18% 0.03 150);
+	--color-warning: oklch(84% 0.15 75);
+	--color-warning-content: oklch(20% 0.03 75);
+	--color-error: oklch(68% 0.2 22);
+	--color-error-content: oklch(17% 0.03 27);
+	--radius-selector: 0rem;
+	--radius-field: 0rem;
+	--radius-box: 0rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 2px;
+	--depth: 0;
+	--noise: 1;
+}
+
+@theme {
+	--font-display: 'Bricolage Grotesque Variable', 'Arial Black', system-ui, sans-serif;
+	/* Başlıklar her zaman 800: font-normal/bold sınıflarından bağımsız. Optik boyut otomatik. */
+	--font-display--font-variation-settings: 'wght' 800;
+	--font-sans: 'DM Sans', system-ui, sans-serif;
+	--font-mono: 'JetBrains Mono', ui-monospace, monospace;
+	--font-el: 'Caveat', cursive;
+}
+
+/* Sert ofset gölgeler: mürekkep renginde, bulanıklık yok. */
+@theme inline {
+	--shadow-sert-sm: 2px 2px 0 0 var(--color-base-content);
+	--shadow-sert: 4px 4px 0 0 var(--color-base-content);
+	--shadow-sert-lg: 8px 8px 0 0 var(--color-base-content);
+}

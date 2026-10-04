@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="tr" class="scroll-smooth">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="text-scale" content="scale" />
+		<script>
+			// Temayı ve plan modunu boyamadan önce uygula (yanıp sönme olmasın).
+			try {
+				var t = localStorage.getItem('tema');
+				if (t !== 'tezgah' && t !== 'gece-vardiyasi')
+					t = matchMedia('(prefers-color-scheme: dark)').matches ? 'gece-vardiyasi' : 'tezgah';
+				document.documentElement.dataset.theme = t;
+				if (localStorage.getItem('plan') === '1') document.documentElement.dataset.plan = '';
+			} catch (e) {
+				document.documentElement.dataset.theme = 'tezgah';
+			}
+		</script>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>
