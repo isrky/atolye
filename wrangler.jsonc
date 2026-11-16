@@ -12,8 +12,7 @@
 		{
 			"binding": "DB",
 			"database_name": "isrky",
-			// TODO: `wrangler d1 create isrky` çıktısındaki kimlikle değiştir
-			"database_id": "00000000-0000-0000-0000-000000000000",
+			"database_id": "f5c8c821-be49-41dc-8087-923334a150a1",
 			"migrations_dir": "migrations"
 		}
 	],
