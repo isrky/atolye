@@ -1,6 +1,6 @@
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
-	"name": "mypage",
+	"name": "atolye",
 	"compatibility_date": "2026-10-04",
 	"compatibility_flags": ["nodejs_als"],
 	"main": ".svelte-kit/cloudflare/_worker.js",
@@ -16,6 +16,11 @@
 			"migrations_dir": "migrations"
 		}
 	],
+	// Gizli değerlerin adları burada bildirilir: türler .dev.vars olmadan da (CI'da) aynı üretilir
+	// ve `wrangler deploy` eksik gizli değerle yayına almayı reddeder.
+	"secrets": {
+		"required": ["TUZ"]
+	},
 	"workers_dev": true,
 	"preview_urls": true
 }
