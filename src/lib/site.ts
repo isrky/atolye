@@ -3,6 +3,13 @@ export const site = {
 	kisaAd: 'isrky',
 	alanAdi: 'isrky.com',
 	url: 'https://isrky.com',
+	// Yazı görselleri: R2 kovası + Cloudflare görsel dönüşümleri (bkz. scripts/gorsel.ts).
+	gorsel: {
+		adres: 'https://gorsel.isrky.com',
+		kova: 'isrky-gorsel',
+		/** Sayfada sunulan genişlikler; her biri ayda bir "benzersiz dönüşüm" sayılır. */
+		genislikler: [640, 1280, 2000]
+	},
 	unvan: 'Yazılım Mühendisi',
 	aciklama: 'İsmail Sarıkaya’nın atölyesi: yazılım üzerine yazılar, projeler ve bağlantılar.',
 	// TODO: gerçek değerlerle güncelle

@@ -21,8 +21,48 @@
 		ozet,
 		adres,
 		gorsel,
-		dosyaAdi
-	}: { baslik: string; ozet: string; adres: string; gorsel: string; dosyaAdi: string } = $props();
+		dosyaAdi,
+		sade = false
+	}: {
+		baslik: string;
+		ozet: string;
+		adres: string;
+		gorsel: string;
+		dosyaAdi: string;
+		/** Zen gibi sakin sayfalar için: sert çerçeve ve gölgeler olmadan, temanın kendi görünümü. */
+		sade?: boolean;
+	} = $props();
+
+	// Görünüm sınıfları: atölye (sert çerçeve, ofset gölge) ya da sade.
+	const g = $derived(
+		sade
+			? {
+					tetik:
+						'link inline-flex cursor-pointer items-center gap-2 self-start py-1 text-sm link-hover',
+					kutu: 'border border-base-300',
+					ust: 'border-b border-base-300',
+					baslik: 'text-xl',
+					gorsel: 'rounded-box border border-base-300',
+					birincil: 'btn gap-2 btn-primary',
+					ikincil: 'btn gap-2',
+					hedef: 'btn w-full justify-start gap-2 btn-sm',
+					altBaslik: 'mb-2 text-sm text-base-content/70 italic',
+					not: 'text-xs leading-relaxed text-base-content/70'
+				}
+			: {
+					tetik:
+						'btn gap-2 border-2 border-base-content bg-primary text-primary-content shadow-sert-sm transition-[translate,box-shadow] duration-150 btn-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none motion-reduce:transition-none',
+					kutu: 'border-2 border-base-content shadow-sert-lg',
+					ust: 'border-b-2 border-base-content bg-base-200',
+					baslik: 'font-display text-xl',
+					gorsel: 'border-2 border-base-content shadow-sert',
+					birincil: 'btn gap-2 border-2 border-base-content shadow-sert-sm btn-primary',
+					ikincil: 'btn gap-2 border-2 border-base-content shadow-sert-sm',
+					hedef: 'btn w-full justify-start gap-2 border-2 border-base-content btn-sm',
+					altBaslik: 'mb-2 font-mono text-xs font-bold tracking-wider uppercase',
+					not: 'font-mono text-[11px] leading-relaxed text-base-content/70'
+				}
+	);
 
 	let dialog: HTMLDialogElement;
 	let yerelPaylasim = $state(false);
@@ -80,12 +120,7 @@
 	}
 </script>
 
-<button
-	type="button"
-	class="btn gap-2 border-2 border-base-content bg-primary text-primary-content shadow-sert-sm transition-[translate,box-shadow] duration-150 btn-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none motion-reduce:transition-none"
-	onclick={() => dialog.showModal()}
-	aria-haspopup="dialog"
->
+<button type="button" class={g.tetik} onclick={() => dialog.showModal()} aria-haspopup="dialog">
 	<Share2 class="size-4" aria-hidden="true" />Paylaş
 </button>
 
@@ -94,13 +129,9 @@
 	class="modal modal-bottom sm:modal-middle"
 	aria-labelledby="paylas-baslik"
 >
-	<div
-		class="modal-box max-h-[92dvh] w-full max-w-3xl border-2 border-base-content p-0 shadow-sert-lg sm:w-[calc(100%-2rem)]"
-	>
-		<header
-			class="flex items-center justify-between gap-3 border-b-2 border-base-content bg-base-200 px-5 py-3"
-		>
-			<h2 id="paylas-baslik" class="font-display text-xl">Bu sayfayı paylaş</h2>
+	<div class="modal-box max-h-[92dvh] w-full max-w-3xl p-0 sm:w-[calc(100%-2rem)] {g.kutu}">
+		<header class="flex items-center justify-between gap-3 px-5 py-3 {g.ust}">
+			<h2 id="paylas-baslik" class={g.baslik}>Bu sayfayı paylaş</h2>
 			<form method="dialog">
 				<button class="btn btn-square btn-ghost btn-sm" aria-label="Paylaşım penceresini kapat">
 					<X class="size-5" aria-hidden="true" />
@@ -116,23 +147,19 @@
 					width="1080"
 					height="1440"
 					loading="lazy"
-					class="aspect-[3/4] h-auto w-full border-2 border-base-content bg-base-200 object-cover shadow-sert"
+					class="aspect-[3/4] h-auto w-full bg-base-200 object-cover {g.gorsel}"
 				/>
 			</div>
 
 			<div class="flex flex-col gap-5">
 				<div class="flex flex-col gap-2">
-					<a
-						href={gorsel}
-						download={dosyaAdi}
-						class="btn gap-2 border-2 border-base-content shadow-sert-sm btn-primary"
-					>
+					<a href={gorsel} download={dosyaAdi} class={g.birincil}>
 						<ImageDown class="size-4" aria-hidden="true" />Görseli indir
 					</a>
 					{#if yerelPaylasim}
 						<button
 							type="button"
-							class="btn gap-2 border-2 border-base-content shadow-sert-sm"
+							class={g.ikincil}
 							onclick={telefonlaPaylas}
 							disabled={paylasiliyor}
 						>
@@ -140,31 +167,17 @@
 							{paylasiliyor ? 'Hazırlanıyor…' : 'Görselle paylaş'}
 						</button>
 					{/if}
-					<button
-						type="button"
-						class="btn gap-2 border-2 border-base-content shadow-sert-sm"
-						onclick={() => baglantiKopyala(adres)}
-					>
+					<button type="button" class={g.ikincil} onclick={() => baglantiKopyala(adres)}>
 						<Copy class="size-4" aria-hidden="true" />Bağlantıyı kopyala
 					</button>
 				</div>
 
 				<section aria-labelledby="paylas-hedefler">
-					<h3
-						id="paylas-hedefler"
-						class="mb-2 font-mono text-xs font-bold tracking-wider uppercase"
-					>
-						Bağlantıyla paylaş
-					</h3>
+					<h3 id="paylas-hedefler" class={g.altBaslik}>Bağlantıyla paylaş</h3>
 					<ul class="grid grid-cols-2 gap-2 sm:grid-cols-3">
 						{#each hedefler as h (h.ad)}
 							<li>
-								<a
-									href={h.href}
-									target="_blank"
-									rel="noopener noreferrer"
-									class="btn w-full justify-start gap-2 border-2 border-base-content btn-sm"
-								>
+								<a href={h.href} target="_blank" rel="noopener noreferrer" class={g.hedef}>
 									<h.ikon class="size-4" aria-hidden="true" />{h.ad}
 									<span class="sr-only">(yeni sekmede açılır)</span>
 								</a>
@@ -173,7 +186,7 @@
 					</ul>
 				</section>
 
-				<p class="font-mono text-[11px] leading-relaxed text-base-content/70">
+				<p class={g.not}>
 					Bağlantı paylaşıldığında WhatsApp, Discord ve benzerleri sayfanın önizleme görselini
 					kendiliğinden gösterir.
 				</p>

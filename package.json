@@ -16,11 +16,13 @@
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
 		"gen": "wrangler types",
-		"paylasim": "node scripts/paylasim.ts"
+		"paylasim": "node scripts/paylasim.ts",
+		"gorsel": "node scripts/gorsel.ts"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
 		"@fontsource-variable/bricolage-grotesque": "^5.3.0",
+		"@fontsource-variable/literata": "^5.3.0",
 		"@fontsource/caveat": "^5.3.0",
 		"@fontsource/dm-sans": "^5.3.0",
 		"@fontsource/jetbrains-mono": "^5.3.0",

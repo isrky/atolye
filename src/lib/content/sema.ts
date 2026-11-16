@@ -23,6 +23,20 @@ export type Yazi = {
 	toc: TocOgesi[];
 };
 
+/** Zen: kişisel yazılar. Klasör adı kalıcı adrestir (/zen/<slug>). */
+export type ZenYazisi = {
+	slug: string;
+	yol: string; // /zen/sabah-yuruyusleri
+	baslik: string;
+	ozet?: string;
+	tarih: string;
+	/** Listenin başında, yılların üstünde durur. */
+	sabit: boolean;
+	taslak: boolean;
+	ornek: boolean;
+	okumaSuresi: number;
+};
+
 export const PROJE_DURUMLARI = { yayinda: 'Yayında', devam: 'Sürüyor', arsiv: 'Arşivde' } as const;
 export type ProjeDurumu = keyof typeof PROJE_DURUMLARI;
 
@@ -120,6 +134,27 @@ export function yaziAyristir(yol: string, ham: Ham): Yazi {
 		ornek: ham.ornek === true,
 		okumaSuresi: Number(ham.okumaSuresi ?? 1),
 		toc: (ham.toc as TocOgesi[]) ?? []
+	};
+}
+
+export function zenAyristir(yol: string, ham: Ham): ZenYazisi {
+	const slug = slugDosyadan(yol);
+	if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
+		throw new IcerikHatasi(
+			`${yol}: zen klasörü küçük harf, rakam ve tireden oluşmalı (ör. sabah-yuruyusleri). Ad adresi belirler ve sonradan değişmez.`
+		);
+	if (ham.ozet !== undefined && (typeof ham.ozet !== 'string' || !ham.ozet.trim()))
+		throw new IcerikHatasi(`${yol}: "ozet" verilecekse boş olmayan bir metin olmalı`);
+	return {
+		slug,
+		yol: `/zen/${slug}`,
+		baslik: metin(ham, 'baslik', yol),
+		ozet: typeof ham.ozet === 'string' ? ham.ozet.trim() : undefined,
+		tarih: tarih(ham, 'tarih', yol)!,
+		sabit: ham.sabit === true,
+		taslak: ham.taslak === true,
+		ornek: ham.ornek === true,
+		okumaSuresi: Number(ham.okumaSuresi ?? 1)
 	};
 }
 

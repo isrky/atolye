@@ -53,7 +53,7 @@ function vurgula(kod, dil, meta) {
 		defaultColor: false
 	});
 	const baslik = `<figcaption class="flex items-center justify-between gap-2 border-b-2 border-base-content bg-base-200 px-3 py-1 font-mono text-xs"><span>${kacis(dosya ?? lang)}</span><button type="button" data-kopyala class="btn btn-ghost btn-xs" aria-label="Kodu kopyala">Kopyala</button></figcaption>`;
-	const cerceve = `<figure class="kod not-prose my-6 border-2 border-base-content bg-base-100 shadow-sert">${baslik}<div class="overflow-x-auto p-4 font-mono text-sm leading-relaxed [&_pre]:bg-transparent! [&_span]:text-(--shiki-light) in-data-[theme=gece-vardiyasi]:[&_span]:text-(--shiki-dark)">${html}</div></figure>`;
+	const cerceve = `<figure class="kod not-prose my-6 border-2 border-base-content bg-base-100 shadow-sert">${baslik}<div class="overflow-x-auto p-4 font-mono text-sm leading-relaxed [&_pre]:bg-transparent! [&_span]:text-(--shiki-light) in-data-[theme=gece-vardiyasi]:[&_span]:text-(--shiki-dark) in-data-[theme=zen-gece]:[&_span]:text-(--shiki-dark)">${html}</div></figure>`;
 	return `{@html \`${escapeSvelte(cerceve)}\`}`;
 }
 
@@ -128,13 +128,35 @@ function matematik() {
 	};
 }
 
+/**
+ * Tek başına duran görseli saran <p>'yi kaldırır. Görsel <figure> olarak çizilir (Gorsel.svelte);
+ * <p> içinde <figure> geçersizdir, tarayıcı ağacı düzeltir ve sayfa canlanırken hata verir.
+ */
+function gorselleriAc() {
+	/** @param {any} tree */
+	return (tree) => {
+		visit(tree, 'element', (/** @type {any} */ node, i, /** @type {any} */ parent) => {
+			if (i === undefined || !parent || node.tagName !== 'p') return;
+			const dolu = node.children.filter(
+				(/** @type {any} */ c) => !(c.type === 'text' && !c.value.trim())
+			);
+			if (dolu.length === 1 && dolu[0].type === 'element' && dolu[0].tagName === 'img')
+				parent.children[i] = dolu[0];
+		});
+	};
+}
+
 /** @type {import('mdsvex').MdsvexOptions} */
 export default {
 	extensions: ['.md', '.svx'],
 	smartypants: { dashes: 'oldschool' },
-	layout: { _: fileURLToPath(new URL('./src/lib/markdown/Duzen.svelte', import.meta.url)) },
+	// "zen" anahtarı /zen/ klasöründeki dosyalara kendiliğinden uygulanır; gerisi Duzen'i alır.
+	layout: {
+		zen: fileURLToPath(new URL('./src/lib/markdown/ZenDuzen.svelte', import.meta.url)),
+		_: fileURLToPath(new URL('./src/lib/markdown/Duzen.svelte', import.meta.url))
+	},
 	layoutPropForwarding: 'runes',
 	highlight: { highlighter: vurgula },
 	remarkPlugins: [remarkMath, okumaSuresi],
-	rehypePlugins: [basliklar, matematik]
+	rehypePlugins: [basliklar, matematik, gorselleriAc]
 };

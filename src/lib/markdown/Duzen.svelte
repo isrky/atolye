@@ -8,6 +8,7 @@
 <script lang="ts">
 	import 'katex/dist/katex.min.css';
 	import type { Snippet } from 'svelte';
+	import Isikkutusu from './Isikkutusu.svelte';
 
 	let { children }: { children: Snippet } = $props();
 
@@ -33,3 +34,5 @@
 >
 	{@render children()}
 </div>
+
+<Isikkutusu />

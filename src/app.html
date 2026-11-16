@@ -6,14 +6,19 @@
 		<meta name="text-scale" content="scale" />
 		<script>
 			// Temayı ve plan modunu boyamadan önce uygula (yanıp sönme olmasın).
+			// /zen kendi temasını ve kendi tercihini kullanır; plan modu orada yok.
+			var zen = /^\/zen(\/|$)/.test(location.pathname);
+			var acik = zen ? 'zen-gunduz' : 'tezgah';
+			var koyu = zen ? 'zen-gece' : 'gece-vardiyasi';
 			try {
-				var t = localStorage.getItem('tema');
-				if (t !== 'tezgah' && t !== 'gece-vardiyasi')
-					t = matchMedia('(prefers-color-scheme: dark)').matches ? 'gece-vardiyasi' : 'tezgah';
+				var t = localStorage.getItem(zen ? 'zen-tema' : 'tema');
+				if (t !== acik && t !== koyu)
+					t = matchMedia('(prefers-color-scheme: dark)').matches ? koyu : acik;
 				document.documentElement.dataset.theme = t;
-				if (localStorage.getItem('plan') === '1') document.documentElement.dataset.plan = '';
+				if (!zen && localStorage.getItem('plan') === '1')
+					document.documentElement.dataset.plan = '';
 			} catch (e) {
-				document.documentElement.dataset.theme = 'tezgah';
+				document.documentElement.dataset.theme = acik;
 			}
 		</script>
 		%sveltekit.head%

@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { etiketler, ilgiliYazilar, projeleriDerle, seriler, yazilariDerle } from './derle';
+import {
+	etiketler,
+	ilgiliYazilar,
+	projeleriDerle,
+	seriler,
+	yazilariDerle,
+	zenDerle
+} from './derle';
 import { IcerikHatasi } from './sema';
 
 /** Klasör adı "NNN-ad" biçiminde: yazi('001-eski') → YZ-001, ad "eski". */
@@ -112,5 +119,50 @@ describe('projeleriDerle', () => {
 	it('geçersiz durumu reddeder', () => {
 		const [yol, ham] = proje('c', 2024, 1) as [string, Record<string, unknown>];
 		expect(() => projeleriDerle({ [yol]: { ...ham, durum: 'bitti' } })).toThrow(/durum/);
+	});
+});
+
+describe('zenDerle', () => {
+	const zen = (klasor: string, ek: Record<string, unknown> = {}) =>
+		[
+			`/src/content/zen/${klasor}/index.md`,
+			{ baslik: klasor, tarih: '2026-01-01', ...ek }
+		] as const;
+	const moduller = Object.fromEntries([
+		zen('eski', { tarih: '2025-12-30' }),
+		zen('yeni', { tarih: '2026-03-01', ozet: ' kısa özet ' }),
+		zen('taslak', { tarih: '2026-04-01', taslak: true })
+	]);
+
+	it('en yeniyi başa koyar; adres klasör adından gelir, özet isteğe bağlıdır', () => {
+		const l = zenDerle(moduller, false);
+		expect(l.map((z) => z.slug)).toEqual(['yeni', 'eski']);
+		expect(l[0]).toMatchObject({ yol: '/zen/yeni', ozet: 'kısa özet' });
+		expect(l[1].ozet).toBeUndefined();
+	});
+
+	it('taslakları yalnızca istenirse gösterir', () => {
+		expect(zenDerle(moduller, true).map((z) => z.slug)).toEqual(['taslak', 'yeni', 'eski']);
+	});
+
+	it('sabit işaretini taşır ama sırayı ona göre değiştirmez', () => {
+		const l = zenDerle(
+			Object.fromEntries([
+				zen('hakkinda', { tarih: '2025-01-01', sabit: true }),
+				zen('yeni', { tarih: '2026-03-01' })
+			]),
+			false
+		);
+		expect(l.map((z) => [z.slug, z.sabit])).toEqual([
+			['yeni', false],
+			['hakkinda', true]
+		]);
+	});
+
+	it('geçersiz klasör adını ve eksik başlığı reddeder', () => {
+		expect(() => zenDerle(Object.fromEntries([zen('Büyük Harf')]), false)).toThrow(IcerikHatasi);
+		expect(() => zenDerle(Object.fromEntries([zen('basliksiz', { baslik: '' })]), false)).toThrow(
+			IcerikHatasi
+		);
 	});
 });

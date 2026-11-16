@@ -110,3 +110,71 @@ test('yazılar kısa numaralı adreste; eski ve bilinmeyen adresler 404', async 
 	for (const yol of ['/yazilar/bu-tezgah-nasil-kuruldu', '/yazilar/yz-999'])
 		expect((await page.goto(yol))?.status()).toBe(404);
 });
+
+test('zen ayrı bir yer: atölye başlığı yok, kendi teması var', async ({ page }) => {
+	const yanit = await page.goto('/zen');
+	expect(yanit?.status()).toBe(200);
+	await expect(page.getByRole('navigation', { name: 'Ana gezinti' })).toHaveCount(0);
+	await expect(page.locator('html')).toHaveAttribute('data-theme', /^zen-/);
+	await expect(page.locator('h1')).toHaveText('Zen');
+
+	await page.getByRole('link', { name: 'Kapıyı kapatınca' }).click();
+	await expect(page).toHaveURL('/zen/kapiyi-kapatinca');
+	await expect(page.locator('h1')).toContainText('Kapıyı kapatınca');
+	const gorsel = await page.locator('meta[property="og:image"]').getAttribute('content');
+	expect(gorsel).toMatch(/\/paylas\/zen\/kapiyi-kapatinca\/embed\.png$/);
+});
+
+test('zen: sabit yazı yılların üstünde durur, eski/yeni zincirine girmez', async ({ page }) => {
+	await page.goto('/zen');
+	const sabit = page.getByRole('region', { name: 'Sabit yazılar' });
+	await expect(sabit.getByRole('link', { name: 'Ben kimim' })).toBeVisible();
+	await expect(sabit).toContainText('sabit');
+	await expect(page.getByRole('link', { name: 'Ben kimim' })).toHaveCount(1);
+	await expect(page.getByRole('region', { name: '2026' })).not.toContainText('Ben kimim');
+
+	await page.goto('/zen/kapiyi-kapatinca');
+	await expect(page.getByRole('link', { name: 'Ben kimim' })).toHaveCount(0);
+	await page.goto('/zen/ben-kimim');
+	await expect(page.locator('h1')).toContainText('Ben kimim');
+	await expect(page.getByRole('navigation', { name: 'Diğer yazılar' })).toHaveCount(0);
+});
+
+test('zen teması atölye temasından ayrı saklanır', async ({ page }) => {
+	await page.goto('/zen');
+	await page.waitForLoadState('networkidle');
+	const once = await page.locator('html').getAttribute('data-theme');
+	await page.getByRole('button', { name: /görünümüne geç/ }).click();
+	const sonra = await page.locator('html').getAttribute('data-theme');
+	expect(sonra).not.toBe(once);
+	expect(sonra).toMatch(/^zen-/);
+	await page.reload();
+	await expect(page.locator('html')).toHaveAttribute('data-theme', sonra!);
+
+	// Atölyeye dönünce atölyenin teması ve başlığı geri gelir.
+	await page.getByRole('link', { name: 'isrky.com' }).click();
+	await expect(page).toHaveURL('/');
+	await expect(page.locator('html')).toHaveAttribute('data-theme', /^(tezgah|gece-vardiyasi)$/);
+	await expect(page.getByRole('navigation', { name: 'Ana gezinti' })).toBeVisible();
+});
+
+test('zen: Paylaş penceresi, RSS ve 404', async ({ page, request }) => {
+	await page.goto('/zen/kapiyi-kapatinca');
+	await page.waitForLoadState('networkidle');
+	await page.getByRole('button', { name: 'Paylaş', exact: true }).click();
+	const pencere = page.getByRole('dialog', { name: 'Bu sayfayı paylaş' });
+	await expect(pencere).toBeVisible();
+	const indir = pencere.getByRole('link', { name: 'Görseli indir' });
+	await expect(indir).toHaveAttribute('download', 'isrky-zen-kapiyi-kapatinca.png');
+	expect((await request.get((await indir.getAttribute('href'))!)).status()).toBe(200);
+	await page.keyboard.press('Escape');
+
+	const rss = await request.get('/zen/rss.xml');
+	expect(rss.status()).toBe(200);
+	expect(await rss.text()).toContain('/zen/kapiyi-kapatinca');
+
+	const yok = await page.goto('/zen/yok-boyle-bir-yazi');
+	expect(yok?.status()).toBe(404);
+	await expect(page.getByRole('navigation', { name: 'Ana gezinti' })).toHaveCount(0);
+	await expect(page.getByRole('link', { name: 'Tüm yazılar', exact: true })).toBeVisible();
+});

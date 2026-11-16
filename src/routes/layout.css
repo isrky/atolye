@@ -9,6 +9,9 @@
 @import '@fontsource/jetbrains-mono/400.css';
 @import '@fontsource/jetbrains-mono/700.css';
 @import '@fontsource/caveat/700.css';
+/* Zen'in okuma yazı tipi (yalnızca /zen kullanır; dosyalar kullanıldığında indirilir). */
+@import '@fontsource-variable/literata/wght.css';
+@import '@fontsource-variable/literata/wght-italic.css';
 
 @plugin 'daisyui' {
 	themes: false;
@@ -86,7 +89,81 @@
 	--noise: 1;
 }
 
+/* Zen (/zen): atölyenin dışında, sessiz bir oda. Keten kâğıt, çay ve kil tonları. */
+@plugin 'daisyui/theme' {
+	name: 'zen-gunduz';
+	default: false;
+	prefersdark: false;
+	color-scheme: light;
+	--color-base-100: oklch(96.5% 0.014 85);
+	--color-base-200: oklch(93.5% 0.018 84);
+	--color-base-300: oklch(88% 0.022 82);
+	--color-base-content: oklch(27% 0.02 60);
+	--color-primary: oklch(46% 0.07 50);
+	--color-primary-content: oklch(97% 0.012 85);
+	--color-secondary: oklch(50% 0.05 130);
+	--color-secondary-content: oklch(97% 0.012 85);
+	--color-accent: oklch(55% 0.06 40);
+	--color-accent-content: oklch(97% 0.012 85);
+	--color-neutral: oklch(27% 0.02 60);
+	--color-neutral-content: oklch(94% 0.016 85);
+	--color-info: oklch(50% 0.06 240);
+	--color-info-content: oklch(97% 0.01 240);
+	--color-success: oklch(50% 0.07 150);
+	--color-success-content: oklch(97% 0.01 150);
+	--color-warning: oklch(72% 0.1 75);
+	--color-warning-content: oklch(24% 0.03 75);
+	--color-error: oklch(50% 0.13 28);
+	--color-error-content: oklch(97% 0.01 28);
+	--radius-selector: 1rem;
+	--radius-field: 0.25rem;
+	--radius-box: 0.5rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 1px;
+	--depth: 0;
+	--noise: 0;
+}
+
+/* Zen, gece: aynı oda, kısık ışık. */
+@plugin 'daisyui/theme' {
+	name: 'zen-gece';
+	default: false;
+	prefersdark: false;
+	color-scheme: dark;
+	--color-base-100: oklch(22% 0.01 70);
+	--color-base-200: oklch(25.5% 0.012 70);
+	--color-base-300: oklch(31% 0.014 70);
+	--color-base-content: oklch(86% 0.02 82);
+	--color-primary: oklch(76% 0.06 60);
+	--color-primary-content: oklch(20% 0.02 60);
+	--color-secondary: oklch(72% 0.05 130);
+	--color-secondary-content: oklch(20% 0.02 130);
+	--color-accent: oklch(72% 0.06 40);
+	--color-accent-content: oklch(20% 0.02 40);
+	--color-neutral: oklch(17% 0.008 70);
+	--color-neutral-content: oklch(86% 0.02 82);
+	--color-info: oklch(74% 0.06 240);
+	--color-info-content: oklch(20% 0.02 240);
+	--color-success: oklch(74% 0.07 150);
+	--color-success-content: oklch(20% 0.02 150);
+	--color-warning: oklch(80% 0.09 75);
+	--color-warning-content: oklch(22% 0.03 75);
+	--color-error: oklch(70% 0.11 28);
+	--color-error-content: oklch(20% 0.03 28);
+	--radius-selector: 1rem;
+	--radius-field: 0.25rem;
+	--radius-box: 0.5rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 1px;
+	--depth: 0;
+	--noise: 0;
+}
+
 @theme {
+	/* Zen'in okuma yazı tipi: sakin bir serif. */
+	--font-zen: 'Literata Variable', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
 	/* 12 kolonlu sayfa ızgarasının sütun aralığı; Plan modu katmanı da bunu kullanır. */
 	--spacing-sutun: 2rem;
 	--font-display: 'Bricolage Grotesque Variable', 'Arial Black', system-ui, sans-serif;

@@ -10,6 +10,13 @@ const yazilar = readdirSync('src/content/yazilar')
 		return existsSync(dosya) && !/^taslak:\s*true/m.test(readFileSync(dosya, 'utf8'));
 	})
 	.map((klasor) => `yz-${klasor.split('-')[0]}`);
+// Zen: klasör adı görsel klasörüyle aynı (static/paylas/zen/<slug>).
+const zenYazilari = existsSync('src/content/zen')
+	? readdirSync('src/content/zen').filter((klasor) => {
+			const dosya = `src/content/zen/${klasor}/index.md`;
+			return existsSync(dosya) && !/^taslak:\s*true/m.test(readFileSync(dosya, 'utf8'));
+		})
+	: [];
 const manifest: Record<string, string> = JSON.parse(
 	readFileSync('static/paylas/manifest.json', 'utf8')
 );
@@ -34,5 +41,20 @@ describe('paylaşım görselleri', () => {
 
 	it('silinmiş yazıların görseli kalmamış', () => {
 		expect(readdirSync('static/paylas/yazilar').sort()).toEqual([...yazilar].sort());
+	});
+
+	it.each(zenYazilari)('zen/%s için önizleme 1200×630, sosyal 1080×1440', (slug) => {
+		expect(boyut(`static/paylas/zen/${slug}/embed.png`)).toEqual([1200, 630]);
+		expect(boyut(`static/paylas/zen/${slug}/sosyal.png`)).toEqual([1080, 1440]);
+		expect(manifest[`zen:${slug}`], 'manifest kaydı yok: bun run paylasim').toBeTruthy();
+	});
+
+	it('zen varsayılan önizlemesi 1200×630', () => {
+		expect(boyut('static/og/zen.png')).toEqual([1200, 630]);
+	});
+
+	it('silinmiş zen yazılarının görseli kalmamış', () => {
+		const klasor = 'static/paylas/zen';
+		expect(existsSync(klasor) ? readdirSync(klasor).sort() : []).toEqual([...zenYazilari].sort());
 	});
 });

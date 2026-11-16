@@ -1,5 +1,5 @@
-// Paylaşım görselleri: her yazı için bağlantı önizlemesi (1200×630) ve indirilebilir
-// sosyal görsel (1080×1440, 3:4), ayrıca sitenin varsayılan önizlemesi.
+// Paylaşım görselleri: her yazı ve her zen yazısı için bağlantı önizlemesi (1200×630) ve
+// indirilebilir sosyal görsel (1080×1440, 3:4), ayrıca sitenin ve zen'in varsayılan önizlemesi.
 // Çalıştır: `bun run paylasim` (derlemeden önce otomatik çalışır).
 // Değişmeyen yazılar atlanır; bu yüzden güncel görseller depodaysa tarayıcı gerekmez.
 import { createHash } from 'node:crypto';
@@ -7,32 +7,37 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { join } from 'node:path';
 import { compile } from 'mdsvex';
 import mdsvexAyarlari from '../mdsvex.config.js';
-import { yazilariDerle } from '../src/lib/content/derle.ts';
-import type { Yazi } from '../src/lib/content/sema.ts';
+import { yazilariDerle, zenDerle } from '../src/lib/content/derle.ts';
+import type { Yazi, ZenYazisi } from '../src/lib/content/sema.ts';
 
 const KOK = new URL('..', import.meta.url).pathname;
 const CIKTI = join(KOK, 'static/paylas');
 const MANIFEST = join(CIKTI, 'manifest.json');
 const VARSAYILAN = join(KOK, 'static/og/varsayilan.png');
+const ZEN_VARSAYILAN = join(KOK, 'static/og/zen.png');
+// Zen şablonunu değiştirince artır: zen görselleri yeniden üretilir.
+const ZEN_SABLON_SURUMU = 2;
 // Şablonu değiştirince artır: tüm görseller yeniden üretilir.
 const SABLON_SURUMU = 3;
 
 // ---------- İçerik ----------
 
-async function yazilariOku() {
-	const klasor = join(KOK, 'src/content/yazilar');
+/** `src/content/<tur>` altındaki her index.md'nin meta verisi (import.meta.glob ile aynı biçim). */
+async function metaOku(tur: 'yazilar' | 'zen') {
+	const klasor = join(KOK, 'src/content', tur);
 	// Yerleşim (layout) bileşeni burada gerekmez; yalnızca meta veri alınıyor.
 	const ayarlar = { ...mdsvexAyarlari, layout: undefined };
 	const moduller: Record<string, Record<string, unknown>> = {};
+	if (!existsSync(klasor)) return moduller;
 	for (const ad of readdirSync(klasor)) {
 		const dosya = join(klasor, ad, 'index.md');
 		if (!existsSync(dosya)) continue;
 		// Sitenin kendi mdsvex ayarlarıyla derle: ön bilgi + okuma süresi birebir aynı olur.
 		const sonuc = await compile(readFileSync(dosya, 'utf8'), { ...ayarlar, filename: dosya });
 		const meta = sonuc?.code.match(/export const metadata = (\{.*\});/)?.[1];
-		moduller[`/src/content/yazilar/${ad}/index.md`] = meta ? JSON.parse(meta) : {};
+		moduller[`/src/content/${tur}/${ad}/index.md`] = meta ? JSON.parse(meta) : {};
 	}
-	return yazilariDerle(moduller, false);
+	return moduller;
 }
 
 const tarihYaz = (iso: string) =>
@@ -126,11 +131,11 @@ h1{font-family:B;font-weight:800;letter-spacing:-.015em;line-height:1.02;overflo
 `;
 
 // Başlığı en fazla `satir` satıra sığana kadar küçültür.
-const sigdir = (secici: string, satir: number, enKucuk: number) => `
+const sigdir = (secici: string, satir: number, enKucuk: number, satirYuksekligi = 1.02) => `
 <script>
 	const el = document.querySelector('${secici}');
 	let boy = parseFloat(getComputedStyle(el).fontSize);
-	const satirlar = () => Math.round(el.getBoundingClientRect().height / (boy * 1.02));
+	const satirlar = () => Math.round(el.getBoundingClientRect().height / (boy * ${satirYuksekligi}));
 	while (satirlar() > ${satir} && boy > ${enKucuk}) { boy -= 2; el.style.fontSize = boy + 'px'; }
 </script>`;
 
@@ -206,6 +211,109 @@ h1{font-size:104px;line-height:.88;margin:28px 0 20px;letter-spacing:-2px}
 </body></html>`;
 }
 
+// ---------- Zen şablonları ----------
+// Atölyenin ızgarası, damgası ve gölgeleri burada yok: keten kâğıt, tek sütun, açık sağ kenar.
+
+// zen-gunduz teması renkleri (src/routes/layout.css ile aynı).
+const ZEN_RENK = {
+	kagit: 'oklch(96.5% 0.014 85)',
+	murekkep: 'oklch(27% 0.02 60)',
+	soluk: 'oklch(27% 0.02 60 / .62)'
+};
+
+const zenOzetle = (z: ZenYazisi) =>
+	createHash('sha256')
+		.update(JSON.stringify([ZEN_SABLON_SURUMU, z.slug, z.baslik, z.ozet, z.tarih]))
+		.digest('hex')
+		.slice(0, 16);
+
+// Literata (zen'in okuma yazı tipi) görsele gömülür.
+const zenYazitipleri = () => {
+	const kok = '@fontsource-variable/literata/files';
+	const ext = 'U+0100-024F,U+0259,U+1E00-1EFF,U+20A0-20C0';
+	return [
+		['normal', `${kok}/literata-latin-wght-normal.woff2`, undefined],
+		['normal', `${kok}/literata-latin-ext-wght-normal.woff2`, ext],
+		['italic', `${kok}/literata-latin-wght-italic.woff2`, undefined],
+		['italic', `${kok}/literata-latin-ext-wght-italic.woff2`, ext]
+	]
+		.map(
+			([stil, dosya, aralik]) =>
+				`@font-face{font-family:Z;font-style:${stil};font-weight:200 900;src:url(data:font/woff2;base64,${b64(dosya!)})${aralik ? `;unicode-range:${aralik}` : ''}}`
+		)
+		.join('\n');
+};
+
+const zenCss = (genislik: number, yukseklik: number) => `
+${zenYazitipleri()}
+*{box-sizing:border-box;margin:0}
+body{width:${genislik}px;height:${yukseklik}px;overflow:hidden;position:relative;color:${ZEN_RENK.murekkep};
+	background:${ZEN_RENK.kagit};font-family:Z,'Iowan Old Style','Palatino Linotype',Georgia,serif}
+.sutun{position:absolute;display:flex;flex-direction:column}
+.ad{font-style:italic;color:${ZEN_RENK.soluk}}
+h1{font-weight:400;letter-spacing:-.015em;line-height:1.14;overflow-wrap:anywhere}
+.ozet{color:${ZEN_RENK.soluk};display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
+.alt{margin-top:auto;font-style:italic;color:${ZEN_RENK.soluk}}
+.daire{position:absolute;border-radius:50%;border:2px solid ${ZEN_RENK.soluk};border-right-color:transparent;transform:rotate(-12deg)}
+`;
+
+function zenEmbedHtml(z: ZenYazisi) {
+	return `<!doctype html><html lang="tr"><head><meta charset="utf-8"><style>${zenCss(1200, 630)}
+.sutun{left:96px;top:72px;bottom:72px;width:760px;gap:26px}
+.ad{font-size:34px}
+h1{font-size:72px;margin-top:22px}
+.ozet{font-size:30px;line-height:1.5;-webkit-line-clamp:2}
+.alt{font-size:24px}
+.daire{right:96px;bottom:76px;width:44px;height:44px}
+</style></head><body>
+<div class="sutun">
+	<span class="ad">zen</span>
+	<h1>${kacis(z.baslik)}</h1>
+	${z.ozet ? `<p class="ozet">${kacis(z.ozet)}</p>` : ''}
+	<p class="alt">${tarihYaz(z.tarih)} · isrky.com${z.yol}</p>
+</div>
+<div class="daire"></div>
+${sigdir('h1', 3, 44, 1.14)}
+</body></html>`;
+}
+
+function zenSosyalHtml(z: ZenYazisi) {
+	return `<!doctype html><html lang="tr"><head><meta charset="utf-8"><style>${zenCss(1080, 1440)}
+.sutun{left:104px;top:128px;bottom:128px;width:760px;gap:44px}
+.ad{font-size:44px}
+h1{font-size:104px;margin-top:120px}
+.ozet{font-size:40px;line-height:1.55;-webkit-line-clamp:5}
+.alt{font-size:30px;line-height:1.6}
+.daire{right:104px;bottom:136px;width:56px;height:56px}
+</style></head><body>
+<div class="sutun">
+	<span class="ad">zen</span>
+	<h1>${kacis(z.baslik)}</h1>
+	${z.ozet ? `<p class="ozet">${kacis(z.ozet)}</p>` : ''}
+	<p class="alt">${tarihYaz(z.tarih)}<br>isrky.com${z.yol}</p>
+</div>
+<div class="daire"></div>
+${sigdir('h1', 5, 60, 1.14)}
+</body></html>`;
+}
+
+function zenVarsayilanHtml() {
+	return `<!doctype html><html lang="tr"><head><meta charset="utf-8"><style>${zenCss(1200, 630)}
+.sutun{left:96px;top:72px;bottom:72px;width:760px;gap:26px}
+h1{font-size:150px;font-style:italic;margin-top:70px}
+.ozet{font-size:32px;line-height:1.5}
+.alt{font-size:24px}
+.daire{right:96px;bottom:76px;width:44px;height:44px}
+</style></head><body>
+<div class="sutun">
+	<h1>zen</h1>
+	<p class="ozet">İşle ilgisi olmayan, acele etmeden okunacak yazılar.</p>
+	<p class="alt">isrky.com/zen</p>
+</div>
+<div class="daire"></div>
+</body></html>`;
+}
+
 // ---------- Üretim ----------
 
 type Is = { ad: string; html: string; dosya: string; genislik: number; yukseklik: number };
@@ -243,7 +351,8 @@ async function uret(isler: Is[]) {
 
 async function main() {
 	const zorla = process.argv.includes('--zorla');
-	const yazilar = await yazilariOku();
+	const yazilar = yazilariDerle(await metaOku('yazilar'), false);
+	const zenYazilari = zenDerle(await metaOku('zen'), false);
 	const eski: Record<string, string> = existsSync(MANIFEST)
 		? JSON.parse(readFileSync(MANIFEST, 'utf8'))
 		: {};
@@ -284,14 +393,54 @@ async function main() {
 		});
 	}
 
+	const zenVarsayilanOzet = `v${ZEN_SABLON_SURUMU}`;
+	yeni['_zen'] = zenVarsayilanOzet;
+	if (zorla || eski['_zen'] !== zenVarsayilanOzet || !existsSync(ZEN_VARSAYILAN))
+		isler.push({
+			ad: 'zen · varsayılan önizleme',
+			html: zenVarsayilanHtml(),
+			dosya: ZEN_VARSAYILAN,
+			genislik: 1200,
+			yukseklik: 630
+		});
+
+	for (const z of zenYazilari) {
+		const anahtar = `zen:${z.slug}`;
+		const ozet = zenOzetle(z);
+		yeni[anahtar] = ozet;
+		const klasor = join(CIKTI, 'zen', z.slug);
+		const embed = join(klasor, 'embed.png');
+		const sosyal = join(klasor, 'sosyal.png');
+		if (!zorla && eski[anahtar] === ozet && existsSync(embed) && existsSync(sosyal)) continue;
+		isler.push({
+			ad: `zen ${z.slug} · önizleme`,
+			html: zenEmbedHtml(z),
+			dosya: embed,
+			genislik: 1200,
+			yukseklik: 630
+		});
+		isler.push({
+			ad: `zen ${z.slug} · sosyal`,
+			html: zenSosyalHtml(z),
+			dosya: sosyal,
+			genislik: 1080,
+			yukseklik: 1440
+		});
+	}
+
 	// Silinen yazıların görsellerini temizle.
-	const yaziKlasoru = join(CIKTI, 'yazilar');
-	if (existsSync(yaziKlasoru))
-		for (const kimlik of readdirSync(yaziKlasoru))
-			if (!(kimlik in yeni)) {
-				rmSync(join(yaziKlasoru, kimlik), { recursive: true });
-				console.log(`  − ${kimlik} (silindi)`);
+	for (const [tur, onek] of [
+		['yazilar', ''],
+		['zen', 'zen:']
+	]) {
+		const klasor = join(CIKTI, tur);
+		if (!existsSync(klasor)) continue;
+		for (const ad of readdirSync(klasor))
+			if (!(`${onek}${ad}` in yeni)) {
+				rmSync(join(klasor, ad), { recursive: true });
+				console.log(`  − ${onek}${ad} (silindi)`);
 			}
+	}
 
 	if (isler.length) {
 		console.log(`Paylaşım görselleri üretiliyor (${isler.length})…`);

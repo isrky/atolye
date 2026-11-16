@@ -1,5 +1,5 @@
 import { gezinti, site } from '#lib/site.ts';
-import { projeler, tumEtiketler, tumSeriler, yazilar } from '#lib/server/icerik.ts';
+import { projeler, tumEtiketler, tumSeriler, yazilar, zenYazilari } from '#lib/server/icerik.ts';
 
 export const prerender = true;
 
@@ -9,7 +9,9 @@ export function GET() {
 		...yazilar.map((y) => y.yol),
 		...projeler.map((p) => `/projeler/${p.slug}`),
 		...tumEtiketler.map((e) => `/yazilar/etiket/${e.slug}`),
-		...tumSeriler.map((s) => `/yazilar/seri/${s.slug}`)
+		...tumSeriler.map((s) => `/yazilar/seri/${s.slug}`),
+		'/zen',
+		...zenYazilari.map((z) => z.yol)
 	];
 	const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

@@ -5,9 +5,10 @@ import {
 	ilgiliYazilar,
 	projeleriDerle,
 	seriler,
-	yazilariDerle
+	yazilariDerle,
+	zenDerle
 } from '#lib/content/derle.ts';
-import type { Proje, Yazi } from '#lib/content/sema.ts';
+import type { Proje, Yazi, ZenYazisi } from '#lib/content/sema.ts';
 
 export * from '#lib/content/sema.ts';
 export { slugify };
@@ -20,14 +21,20 @@ const projeMetalari = import.meta.glob<Record<string, unknown>>(
 	'/src/content/projeler/*/index.md',
 	{ eager: true, import: 'metadata' }
 );
+const zenMetalari = import.meta.glob<Record<string, unknown>>('/src/content/zen/*/index.md', {
+	eager: true,
+	import: 'metadata'
+});
 
 export const yazilar: Yazi[] = yazilariDerle(yaziMetalari, dev);
 export const projeler: Proje[] = projeleriDerle(projeMetalari);
+export const zenYazilari: ZenYazisi[] = zenDerle(zenMetalari, dev);
 export const tumEtiketler = etiketler(yazilar);
 export const tumSeriler = seriler(yazilar);
 
 /** Adres parçasıyla (yz-003) yazı bulur. */
 export const yaziBul = (kimlik: string) => yazilar.find((y) => y.kimlik === kimlik);
+export const zenBul = (slug: string) => zenYazilari.find((z) => z.slug === slug);
 export const projeBul = (slug: string) => projeler.find((p) => p.slug === slug);
 export const ilgili = (y: Yazi) => ilgiliYazilar(y, yazilar);
 export const etiketliYazilar = (etiketSlug: string) =>

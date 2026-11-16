@@ -4,6 +4,7 @@ import type { Component } from 'svelte';
 type Mod = { default: Component };
 
 const yaziBilesenleri = import.meta.glob<Mod>('/src/content/yazilar/*/index.md');
+const zenBilesenleri = import.meta.glob<Mod>('/src/content/zen/*/index.md');
 const projeBilesenleri = import.meta.glob<Mod>('/src/content/projeler/*/index.md');
 
 /** `klasor`: 003-bu-tezgah-nasil-kuruldu */
@@ -14,5 +15,10 @@ export async function yaziBileseni(klasor: string) {
 
 export async function projeBileseni(slug: string) {
 	const yukle = projeBilesenleri[`/src/content/projeler/${slug}/index.md`];
+	return yukle ? (await yukle()).default : undefined;
+}
+
+export async function zenBileseni(slug: string) {
+	const yukle = zenBilesenleri[`/src/content/zen/${slug}/index.md`];
 	return yukle ? (await yukle()).default : undefined;
 }

@@ -1,7 +1,15 @@
 // Saf işlevler: ham meta verisinden sıralı, numaralı içerik listeleri üretir.
 // Hem uygulama hem testler kullanır.
 import { slugify } from './slug.js';
-import { IcerikHatasi, projeAyristir, yaziAyristir, type Proje, type Yazi } from './sema.ts';
+import {
+	IcerikHatasi,
+	projeAyristir,
+	yaziAyristir,
+	zenAyristir,
+	type Proje,
+	type Yazi,
+	type ZenYazisi
+} from './sema.ts';
 
 type Modul = Record<string, Record<string, unknown>>;
 
@@ -25,6 +33,14 @@ export function yazilariDerle(moduller: Modul, taslaklariGoster: boolean): Yazi[
 	return hepsi
 		.filter((y) => taslaklariGoster || !y.taslak)
 		.sort((a, b) => b.tarih.localeCompare(a.tarih) || b.no - a.no);
+}
+
+/** Zen yazıları: en yeni başta; aynı günde ada göre. */
+export function zenDerle(moduller: Modul, taslaklariGoster: boolean): ZenYazisi[] {
+	return Object.entries(moduller)
+		.map(([yol, ham]) => zenAyristir(yol, ham))
+		.filter((z) => taslaklariGoster || !z.taslak)
+		.sort((a, b) => b.tarih.localeCompare(a.tarih) || a.slug.localeCompare(b.slug));
 }
 
 export function projeleriDerle(moduller: Modul): Proje[] {
