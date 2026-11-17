@@ -57,6 +57,8 @@ Yazı içi bileşenler (`src/lib/markdown/`):
 
 Her yazı için bağlantı önizlemesi (`static/paylas/yazilar/yz-NNN/embed.png`, 1200×630) ve indirilebilir sosyal görsel (`sosyal.png`, 1080×1440, 3:4) `scripts/paylasim.ts` ile üretilir. `bun run build` bunu otomatik çalıştırır; yalnızca değişen yazılar yeniden çizilir (Playwright Chromium gerekir). Üretilen görselleri depoya ekle — `bunx vitest run` eksik ya da eskimiş görseli yakalar. Şablonu değiştirince `SABLON_SURUMU` değerini artır.
 
+Site simgesinin kaynağı `static/favicon.svg`. Değiştirince `bun run simge` çalıştır; `favicon.ico` ve `apple-touch-icon.png` yeniden üretilir, onları da depoya ekle. Koordinatları çift sayıda tut ki 16 pikselde net kalsın.
+
 ## Zen yazısı eklemek
 
 Zen (`/zen`) kişisel yazıların durduğu, atölyeden ayrı görünen bölümdür: kendi teması, kendi RSS'i (`/zen/rss.xml`) vardır; sayaç, damga, etiket ve arama yoktur.

@@ -4,7 +4,6 @@
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import { BriefcaseBusiness, GitBranch, Menu, Rss, Ruler, Search, X } from '@lucide/svelte';
-	import favicon from '#lib/assets/favicon.svg';
 	import { gezinti, site } from '#lib/site.ts';
 	import KomutPaleti from '#lib/ui/KomutPaleti.svelte';
 	import PlanModu from '#lib/ui/PlanModu.svelte';
@@ -42,7 +41,9 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" href="/favicon.ico" sizes="32x32" />
+	<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 	{#if !zen}
 		<link rel="alternate" type="application/rss+xml" title="{site.ad} — Yazılar" href="/rss.xml" />
 	{/if}

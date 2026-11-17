@@ -17,7 +17,8 @@
 		"test:e2e": "playwright test",
 		"gen": "wrangler types",
 		"paylasim": "node scripts/paylasim.ts",
-		"gorsel": "node scripts/gorsel.ts"
+		"gorsel": "node scripts/gorsel.ts",
+		"simge": "node scripts/simge.ts"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
